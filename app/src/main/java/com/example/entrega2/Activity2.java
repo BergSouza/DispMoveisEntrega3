@@ -126,7 +126,6 @@ public class Activity2 extends AppCompatActivity {
         String marca = String.valueOf(inputMarca.getText());
         String modelo = String.valueOf(inputModelo.getText());
         String ano = String.valueOf(inputAno.getText());
-
         String cor = String.valueOf(inputCor.getText());
 
         boolean formularioVerificado = verificaCamposFormulario(marca,modelo,ano,cor);
