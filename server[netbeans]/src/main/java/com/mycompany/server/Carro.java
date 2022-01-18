@@ -1,4 +1,4 @@
-package com.example.entrega2;
+package com.mycompany.server;
 
 public class Carro {
     private int id;
@@ -54,3 +54,4 @@ public class Carro {
         return this.cor;
     }
 }
+

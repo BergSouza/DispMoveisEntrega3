@@ -1,32 +1,51 @@
-package com.example.entrega2;
+package com.example.entrega3;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.entrega3.network.AddCarro;
+import com.example.entrega3.network.DeleteCarro;
+import com.example.entrega3.network.DownloadCarros;
+import com.example.entrega3.network.EditCarro;
+
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    TextView txtLista;
     private ArrayList<Carro> arrayList;
 
     static final int ACTIVITY_2_REQUEST = 1;
+
+    ProgressBar progressBar;
+    DownloadCarros downloadCarros;
+    AddCarro addCarro;
+    EditCarro editCarro;
+    DeleteCarro deleteCarro;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        txtLista = findViewById(R.id.txtLista);
         arrayList = new ArrayList<>();
-        displayItens();
+
+        progressBar = findViewById(R.id.progressBar);
+        progressBar.setIndeterminate(true);
+
+
+        downloadCarros = new DownloadCarros(this, txtLista, progressBar);
+        downloadCarros.start();
+
     }
 
     @Override
@@ -43,20 +62,16 @@ public class MainActivity extends AppCompatActivity {
                 if(data.getStringExtra("chamaFuncao").equals("1")) {
                     Carro car = new Carro(marca, modelo, ano, cor);
                     car.setId(id);
-                    arrayList.add(car);
+                    addCarro = new AddCarro(car);
+                    addCarro.start();
                 }
                 if(data.getStringExtra("chamaFuncao").equals("2")) {
-                    for(int i = 0; i < arrayList.size();i++){
-                        if(arrayList.get(i).getId() == id){
-                            Carro car = arrayList.get(i);
-                            car.setMarca(marca);
-                            car.setModelo(modelo);
-                            car.setAno(ano);
-                            car.setCor(cor);
-                        }
-                    }
+                    Carro car = new Carro(marca, modelo, ano, cor);
+                    car.setId(id);
+                    editCarro = new EditCarro(car);
+                    editCarro.start();
                 }
-                displayItens();
+                refresh();
             }
         }
     }
@@ -84,7 +99,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void displayItens(){
-        TextView txtLista = findViewById(R.id.txtLista);
         txtLista.setText("");
         for(int i = 0; i < arrayList.size();i++){
             txtLista.setText(txtLista.getText()+"----------------------" +
@@ -93,6 +107,43 @@ public class MainActivity extends AppCompatActivity {
                     "\nModelo: "+arrayList.get(i).getModelo()+
                     "\nAno: "+arrayList.get(i).getAno()+
                     "\nCor: "+arrayList.get(i).getCor()+"\n");
+        }
+    }
+
+    public void updateCarros(ArrayList<Carro> arrCar){
+        arrayList = new ArrayList<>();
+        for(int i = 0; i < arrCar.size();i++){
+            arrayList.add(arrCar.get(i));
+        }
+        displayItens();
+    }
+
+    public void atualizar(View v){
+        finish();
+        startActivity(getIntent());
+    }
+
+    public void refresh(){
+        finish();
+        startActivity(getIntent());
+    }
+
+    public void deletar(View v){
+        EditText txtIptEdtItem = findViewById(R.id.txtIptEdtItem);
+        try {
+            int idSelecionado = Integer.parseInt(String.valueOf(txtIptEdtItem.getText()));
+
+            if (verificaIdExiste(idSelecionado)) {
+                deleteCarro = new DeleteCarro(downloadCarros, txtLista, this, idSelecionado, progressBar);
+                deleteCarro.start();
+                Toast.makeText(MainActivity.this, "Deletado!", Toast.LENGTH_SHORT).show();
+                refresh();
+            } else {
+                Toast.makeText(MainActivity.this, "Identificador não encontrado!", Toast.LENGTH_SHORT).show();
+
+            }
+        }catch(java.lang.NumberFormatException err){
+            Toast.makeText(MainActivity.this, "Digite um identificador!", Toast.LENGTH_SHORT).show();
         }
     }
 

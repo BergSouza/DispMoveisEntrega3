@@ -11,6 +11,13 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <Button
+            android:id="@+id/btnAtualizar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="atualizar"
+            android:text="Atualizar" />
+
         <EditText
             android:id="@+id/txtIptEdtItem"
             android:layout_width="407dp"
@@ -18,6 +25,12 @@
             android:ems="10"
             android:hint="Insira o ID do item que deseja editar"
             android:inputType="number" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
         <Button
             android:id="@+id/btnEditar"
@@ -33,9 +46,16 @@
             android:onClick="adicionar"
             android:text="Adicionar" />
 
+        <Button
+            android:id="@+id/btnRemover"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="deletar"
+            android:text="Remover" />
+
         <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="535dp">
+            android:layout_height="wrap_content">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -45,7 +65,7 @@
                 <TextView
                     android:id="@+id/txtLista"
                     android:layout_width="match_parent"
-                    android:layout_height="635dp" />
+                    android:layout_height="wrap_content" />
             </LinearLayout>
         </ScrollView>
 
